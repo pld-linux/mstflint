@@ -1,0 +1,93 @@
+--- mstflint-3.5.0/mtcr_ul/mtcr_ib_ofed.c.orig	2013-12-25 16:04:41.000000000 +0100
++++ mstflint-3.5.0/mtcr_ul/mtcr_ib_ofed.c	2014-02-02 19:39:08.948133384 +0100
+@@ -414,7 +414,7 @@
+         }
+     }
+     if (!ivm->dl_handle) {
+-        IBERROR((dlerror()));
++        IBERROR(("%s", dlerror()));
+         //free(ivm);
+         return -1;
+ 
+--- mstflint-3.5.0/mlxfwops/lib/fw_ops.cpp.orig	2013-12-25 16:04:41.000000000 +0100
++++ mstflint-3.5.0/mlxfwops/lib/fw_ops.cpp	2014-02-02 19:42:33.294791474 +0100
+@@ -875,7 +875,7 @@
+         return errmsg("operation supported only for switch devices InfiniScaleIV and SwitchX over an IB interface");
+     }
+     if (!((Flash*)_ioAccess)->sw_reset()) {
+-        return errmsg(_ioAccess->err());
++        return errmsg("%s", _ioAccess->err());
+     }
+     return true;
+ }
+@@ -965,7 +965,7 @@
+ bool FwOperations::RomInfo::ParseInfo()
+ {
+     if (!GetExpRomVersion()) {
+-        snprintf(expRomErrMsg, MAX_ROM_ERR_MSG_LEN, err());
++        snprintf(expRomErrMsg, MAX_ROM_ERR_MSG_LEN, "%s", err());
+         expRomErrMsgValid = true;
+         //printf("-D-expRomErrMsg: %s \n", expRomErrMsg);
+     }
+--- mstflint-3.5.0/mlxfwops/lib/fs2_ops.cpp.orig	2013-12-25 16:04:41.000000000 +0100
++++ mstflint-3.5.0/mlxfwops/lib/fs2_ops.cpp	2014-02-02 19:43:50.514788234 +0100
+@@ -1345,7 +1345,7 @@
+     // Compine the image and the rom into new daa
+     if(!UpdateRomInImage((u_int8_t*)(&new_data[0]), (u_int8_t*)(fim->getBuf()),
+                          (u_int8_t*)(&_romSect[0]), rom_size, &actual_image_size)) {
+-        return errmsg(err());
++        return errmsg("%s", err());
+     }
+ 
+     // close old image and open new image with the rom.
+@@ -1893,7 +1893,7 @@
+     int new_image_size;
+     if(!UpdateRomInImage((u_int8_t*)(&new_data[0]), (u_int8_t*)(&data[0]),
+                              NULL, 0, &new_image_size)) {
+-        return errmsg(_ioAccess->err());
++        return errmsg("%s", _ioAccess->err());
+     }
+ 
+     // Burn the Image after the ROM was removed.
+--- mstflint-3.5.0/mlxfwops/lib/fs3_ops.cpp.orig	2013-12-25 16:04:41.000000000 +0100
++++ mstflint-3.5.0/mlxfwops/lib/fs3_ops.cpp	2014-02-02 19:46:02.774782684 +0100
+@@ -579,7 +579,7 @@
+          if (pre_message == NULL) {
+              sprintf(message, "Burning FW image without signatures");
+          } else {
+-             sprintf(message, pre_message);
++             strcpy(message, pre_message);
+          }
+          int str_len = strlen(message), restore_len = strlen(RESTORING_MSG);
+          str_len = (restore_len > str_len) ? restore_len : str_len;
+--- mstflint-3.5.0/flint/subcommands.cpp.orig	2013-12-25 16:04:40.000000000 +0100
++++ mstflint-3.5.0/flint/subcommands.cpp	2014-02-02 19:50:36.781437852 +0100
+@@ -1138,7 +1138,7 @@
+     } else {
+         sprintf(curr_ver, "N/A");
+     }
+-    printf(curr_ver); printf("\n");
++    printf("%s\n", curr_ver);
+ 
+     printf("    New FW version:               ");
+     if (_imgInfo.fw_info.fw_ver[0] != 0) {
+@@ -1146,7 +1146,7 @@
+     } else {
+         sprintf(new_ver, "N/A");
+     }
+-    printf(new_ver); printf("\n");
++    printf("%s\n", new_ver);
+ 
+     if (_flintParams.log_specified) {
+         print_line_to_log("Current FW version on flash: %s,  New FW version: %s\n", curr_ver, new_ver);
+--- mstflint-3.5.0/small_utils/mtserver.c.orig	2013-12-25 16:04:41.000000000 +0100
++++ mstflint-3.5.0/small_utils/mtserver.c	2014-02-02 19:55:28.641425602 +0100
+@@ -326,7 +326,7 @@
+     printf("Switches may be:\n");
+     printf("\t-p[ort] <port> - Listen to specify port (default is %d).\n", port);
+     printf("\t-d[ebug]       - Print all socket traffic (for debuging only).\n");
+-    printf(sim_str);
++    fputs(sim_str, stdout);
+     printf("\t-h[elp]        - Print help message.\n");
+     exit (1);
+ }
