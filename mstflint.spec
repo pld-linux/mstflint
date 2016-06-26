@@ -1,20 +1,21 @@
 Summary:	Firmware burning and diagnostic tools for Mellanox HCA/NIC cards
 Summary(pl.UTF-8):	Narzędzia modyfikujące firmware i diagnostyczne dla kart HCA/NIC Mellanox
 Name:		mstflint
-Version:	3.5.0
+Version:	4.4.0
 Release:	1
 License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	http://www.openfabrics.org/downloads/mstflint/%{name}-%{version}.tar.gz
-# Source0-md5:	00c3ea4ea8c99f89a0733a72fcb14fb9
-Patch0:		%{name}-format.patch
+# Source0-md5:	8846152be0581c76396e60e94e953c59
 URL:		http://www.openfabrics.org/
+BuildRequires:	libibmad-devel
 BuildRequires:	libstdc++-devel
+BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Firmware burning and diagnostic tools for Mellanox HCA/NIC cards
+Firmware burning and diagnostic tools for Mellanox HCA/NIC cards.
 
 %description -l pl.UTF-8
 Narzędzia modyfikujące firmware i diagnostyczne dla kart HCA/NIC
@@ -34,10 +35,10 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
-%configure
+%configure \
+	--enable-cs
 %{__make}
 
 %install
@@ -53,6 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE README
 %attr(755,root,root) %{_bindir}/hca_self_test.ofed
+%attr(755,root,root) %{_bindir}/mstconfig
 %attr(755,root,root) %{_bindir}/mstflint
 %attr(755,root,root) %{_bindir}/mstmcra
 %attr(755,root,root) %{_bindir}/mstmread
@@ -61,9 +63,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/mstregdump
 %attr(755,root,root) %{_bindir}/mstvpd
 %{_datadir}/mstflint
+%{_mandir}/man1/mstconfig.1*
 %{_mandir}/man1/mstflint.1*
+%{_mandir}/man1/mstmcra.1*
+%{_mandir}/man1/mstmread.1*
+%{_mandir}/man1/mstmtserver.1*
+%{_mandir}/man1/mstmwrite.1*
+%{_mandir}/man1/mstregdump.1*
+%{_mandir}/man1/mstvpd.1*
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libmtcr_ul.a
-%{_includedir}/mtcr_ul
+%dir %{_libdir}/mstflint
+%{_libdir}/mstflint/libmtcr_ul.a
+%{_includedir}/mstflint
