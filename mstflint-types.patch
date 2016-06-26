@@ -1,0 +1,53 @@
+--- mstflint-4.4.0/common/compatibility.h.orig	2016-05-24 14:52:16.000000000 +0200
++++ mstflint-4.4.0/common/compatibility.h	2016-06-26 13:10:41.042393009 +0200
+@@ -40,7 +40,7 @@
+ 
+ #include <stdio.h>
+ 
+-#if defined(__ia64__) || defined(__x86_64__) || defined(__PPC64__)
++#if (defined(__ia64__) || defined(__x86_64__) || defined(__PPC64__)) && !defined(__ILP32__)
+     #define U64L       "l"
+ #else
+     #define U64L       "ll"
+@@ -92,8 +92,8 @@
+ #define U16H_FMT    "0x%04x"
+ #define U8H_FMT     "0x%02x"
+ 
+-#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD)
+-#   if defined(__MINGW32__) || defined(__MINGW64__)
++#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(__ILP32__)
++#   if defined(__MINGW32__) || defined(__MINGW64__) /* || defined(__GNUC__) */
+ #       include <inttypes.h>
+ #       define U64D_FMT    "0x%"PRId64
+ #       define U64H_FMT    "0x%"PRIx64
+--- mstflint-4.4.0/mtcr_ul/packets_common.h.orig	2016-05-24 14:52:19.000000000 +0200
++++ mstflint-4.4.0/mtcr_ul/packets_common.h	2016-06-26 13:26:41.285456968 +0200
+@@ -162,7 +162,7 @@
+ /* define macros for print fields */
+ //#if defined (ARCH_ia64) || defined(ARCH_x86_64) || defined(ARCH_ppc64) || defined(__MINGW64__)
+ /*
+-#if !defined(UEFI_BUILD) && (defined (ARCH_ia64) || defined(ARCH_x86_64) || defined(ARCH_ppc64) || defined(__MINGW64__))
++#if !defined(UEFI_BUILD) && !defined(__ILP32__) && (defined (ARCH_ia64) || defined(ARCH_x86_64) || defined(ARCH_ppc64) || defined(__MINGW64__))
+ #   define U64H_FMT "0x%016lx"
+ #   define U64D_FMT "%lu"
+ #   define U32H_FMT "0x%08x"
+@@ -170,7 +170,7 @@
+ #   define U8H_FMT  "0x%02x"
+ #   define U32D_FMT "%u"
+ #   define STR_FMT "%s"
+-#elif defined(ARCH_x86) || defined(ARCH_ppc) || defined(__MINGW32__) || defined(UEFI_BUILD)
++#elif defined(ARCH_x86) || defined(ARCH_ppc) || defined(__MINGW32__) || defined(UEFI_BUILD) || defined(__ILP32__)
+ #   define U64H_FMT "0x%016llx"
+ #   define U64D_FMT "%llu"
+ #   define U32H_FMT "0x%08x"
+--- mstflint-4.4.0/tools_layouts/adb_to_c_utils.h.orig	2016-06-26 13:28:56.112446417 +0200
++++ mstflint-4.4.0/tools_layouts/adb_to_c_utils.h	2016-06-26 13:28:59.142603500 +0200
+@@ -169,7 +169,7 @@
+ #define U16H_FMT    "0x%04x"
+ #define U8H_FMT     "0x%02x"
+ 
+-#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD)
++#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(__ILP32__)
+ #   if defined(__MINGW32__) || defined(__MINGW64__)
+ #       include <inttypes.h>
+ #       define U64D_FMT    "0x%"PRId64
