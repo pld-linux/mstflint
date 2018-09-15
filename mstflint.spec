@@ -2,7 +2,7 @@ Summary:	Firmware burning and diagnostic tools for Mellanox HCA/NIC cards
 Summary(pl.UTF-8):	Narzędzia modyfikujące firmware i diagnostyczne dla kart HCA/NIC Mellanox
 Name:		mstflint
 Version:	4.4.0
-Release:	2
+Release:	3
 License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	http://www.openfabrics.org/downloads/mstflint/%{name}-%{version}.tar.gz
