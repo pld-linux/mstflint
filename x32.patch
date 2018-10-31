@@ -1,0 +1,31 @@
+--- mstflint-4.10.0/tools_layouts/adb_to_c_utils.h~	2018-08-28 15:47:51.000000000 +0200
++++ mstflint-4.10.0/tools_layouts/adb_to_c_utils.h	2018-10-31 21:54:40.265218982 +0100
+@@ -169,7 +169,7 @@
+ #define U16H_FMT    "0x%04x"
+ #define U8H_FMT     "0x%02x"
+ 
+-#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(ARCH_arm6l)
++#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(ARCH_arm6l) || (defined(ARCH_x86_64) && defined(__ILP32__))
+ #   if defined(__MINGW32__) || defined(__MINGW64__)
+ #       include <inttypes.h>
+ #       define U64D_FMT    "0x%" PRId64
+--- mstflint-4.10.0/common/compatibility.h~	2018-08-28 15:47:44.000000000 +0200
++++ mstflint-4.10.0/common/compatibility.h	2018-10-31 21:56:56.203556144 +0100
+@@ -40,7 +40,7 @@
+ 
+ #include <stdio.h>
+ 
+-#if defined(__ia64__) || defined(__x86_64__) || defined(__PPC64__) || defined(__arm__)
++#if defined(__ia64__) || (defined(__x86_64__) && !defined(__ILP32__)) || defined(__PPC64__) || defined(__arm__)
+     #define U64L       "l"
+ #else
+     #define U64L       "ll"
+@@ -94,7 +94,7 @@
+ #define U16H_FMT    "0x%04x"
+ #define U8H_FMT     "0x%02x"
+ 
+-#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(ARCH_arm6l)
++#if defined(ARCH_x86) || defined(ARCH_ppc) || defined(UEFI_BUILD) || defined(ARCH_arm6l) || (defined(ARCH_x86_64) && defined(__ILP32__))
+ #   if defined(__MINGW32__) || defined(__MINGW64__)
+ #       include <inttypes.h>
+ #       define U64D_FMT    "0x%" PRId64

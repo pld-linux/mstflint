@@ -9,6 +9,7 @@ Group:		Networking/Utilities
 Source0:	https://github.com/Mellanox/mstflint/releases/download/v%{upstream_ver}/%{name}-%{upstream_ver}.tar.gz
 # Source0-md5:	0fd75b78de3fc46d2cf951eead225a5b
 Patch0:		openssl-1.1.patch
+Patch1:		x32.patch
 URL:		https://github.com/Mellanox/mstflint
 BuildRequires:	libibmad-devel
 BuildRequires:	libstdc++-devel
@@ -40,6 +41,7 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
