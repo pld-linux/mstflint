@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Narzędzia modyfikujące firmware i diagnostyczne dla kart HC
 Name:		mstflint
 Version:	4.10.0
 %define	upstream_ver	%{version}-3
-Release:	1
+Release:	2
 License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	https://github.com/Mellanox/mstflint/releases/download/v%{upstream_ver}/%{name}-%{upstream_ver}.tar.gz
@@ -54,7 +54,7 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
@@ -63,6 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc LICENSE README
+%dir %{_sysconfdir}/mstflint
 %{_sysconfdir}/mstflint/ca-bundle.crt
 %attr(755,root,root) %{_bindir}/mstconfig
 %attr(755,root,root) %{_bindir}/mstflint
