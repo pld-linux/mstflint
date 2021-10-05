@@ -3,13 +3,14 @@ Summary(pl.UTF-8):	Narzędzia modyfikujące firmware i diagnostyczne dla kart HC
 Name:		mstflint
 Version:	4.10.0
 %define	upstream_ver	%{version}-3
-Release:	2
+Release:	3
 License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	https://github.com/Mellanox/mstflint/releases/download/v%{upstream_ver}/%{name}-%{upstream_ver}.tar.gz
 # Source0-md5:	0fd75b78de3fc46d2cf951eead225a5b
 Patch0:		openssl-1.1.patch
 Patch1:		x32.patch
+Patch2:		gcc11.patch
 URL:		https://github.com/Mellanox/mstflint
 BuildRequires:	libibmad-devel
 BuildRequires:	libstdc++-devel
@@ -42,8 +43,13 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__automake}
+%{__autoconf}
 %configure \
 	--enable-cs \
 	--enable-fw-mgr \
