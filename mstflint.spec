@@ -1,23 +1,29 @@
 Summary:	Firmware burning and diagnostic tools for Mellanox HCA/NIC cards
 Summary(pl.UTF-8):	Narzędzia modyfikujące firmware i diagnostyczne dla kart HCA/NIC Mellanox
 Name:		mstflint
-Version:	4.10.0
-%define	upstream_ver	%{version}-3
-Release:	3
+Version:	4.31.0
+%define	upstream_ver	%{version}-1
+Release:	1
 License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	https://github.com/Mellanox/mstflint/releases/download/v%{upstream_ver}/%{name}-%{upstream_ver}.tar.gz
-# Source0-md5:	0fd75b78de3fc46d2cf951eead225a5b
-Patch0:		openssl-1.1.patch
+# Source0-md5:	19b8dd432ba7dbec66873190ec197fc7
 Patch1:		x32.patch
-Patch2:		gcc11.patch
 URL:		https://github.com/Mellanox/mstflint
+BuildRequires:	autoconf >= 2.50
+BuildRequires:	automake
+BuildRequires:	curl-devel
+BuildRequires:	expat-devel
 BuildRequires:	libibmad-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	openssl-devel
+BuildRequires:	libtool >= 2:2
+BuildRequires:	libxml2-devel >= 2.0
+BuildRequires:	muparser-devel
+BuildRequires:	openssl-devel >= 1.0.2k
+BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 # see common/compatibility.h
-ExclusiveArch:	%{ix86} %{x8664} x32 aarch64 ia64 ppc ppc64
+ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 e2k ia64 m68k hppa mips64 ppc ppc64 riscv
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -41,16 +47,16 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 
 %prep
 %setup -q
-%patch -P0 -p1
 %patch -P1 -p1
-%patch -P2 -p1
 
 %build
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__automake}
+%{__autoheader}
 %{__autoconf}
 %configure \
+	--enable-adb-generic-tools \
 	--enable-cs \
 	--enable-fw-mgr \
 	--enable-xml2 \
@@ -71,13 +77,23 @@ rm -rf $RPM_BUILD_ROOT
 %doc LICENSE README
 %dir %{_sysconfdir}/mstflint
 %{_sysconfdir}/mstflint/ca-bundle.crt
+%attr(755,root,root) %{_bindir}/mstarchive
 %attr(755,root,root) %{_bindir}/mstconfig
+%attr(755,root,root) %{_bindir}/mstdevices_info
 %attr(755,root,root) %{_bindir}/mstflint
+%attr(755,root,root) %{_bindir}/mstfwctrl
+%attr(755,root,root) %{_bindir}/mstfwtrace
+%attr(755,root,root) %{_bindir}/mstlink
 %attr(755,root,root) %{_bindir}/mstmcra
+%attr(755,root,root) %{_bindir}/mstmget_temp
 %attr(755,root,root) %{_bindir}/mstmread
 %attr(755,root,root) %{_bindir}/mstmtserver
 %attr(755,root,root) %{_bindir}/mstmwrite
+%attr(755,root,root) %{_bindir}/mstprivhost
+%attr(755,root,root) %{_bindir}/mstreg
 %attr(755,root,root) %{_bindir}/mstregdump
+%attr(755,root,root) %{_bindir}/mstresourcedump
+%attr(755,root,root) %{_bindir}/mstresourceparse
 %attr(755,root,root) %{_bindir}/mstvpd
 %attr(755,root,root) %{_bindir}/mstcongestion
 %attr(755,root,root) %{_bindir}/mstfwmanager
@@ -86,35 +102,38 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/mstflint/python_tools
 %attr(755,root,root) %{_libdir}/mstflint/python_tools/c_dev_mgt.so
 %attr(755,root,root) %{_libdir}/mstflint/python_tools/ccmdif.so
-%{_libdir}/mstflint/python_tools/cmdif.py
 %attr(755,root,root) %{_libdir}/mstflint/python_tools/cmtcr.so
-%{_libdir}/mstflint/python_tools/dev_mgt.py
-%dir %{_libdir}/mstflint/python_tools/mstfwreset
-%dir %{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/__init__.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/logger.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/mcra.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/mlnx_peripheral_components.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/mlxfwreset_mlnxdriver.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/mlxfwreset_status_checker.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/mlxfwreset_utils.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mlxfwresetlib/pci_device.py
-%{_libdir}/mstflint/python_tools/mstfwreset/mstfwreset.py
-%{_libdir}/mstflint/python_tools/mtcr.py
-%{_libdir}/mstflint/python_tools/regaccess.py
 %attr(755,root,root) %{_libdir}/mstflint/python_tools/rreg_access.so
-%{_libdir}/mstflint/python_tools/tools_version.py
+%{_libdir}/mstflint/python_tools/*.py
+%{_libdir}/mstflint/python_tools/mlxpci
+%{_libdir}/mstflint/python_tools/mstfwreset
+%{_libdir}/mstflint/python_tools/mstfwtrace
+%{_libdir}/mstflint/python_tools/mstprivhost
+%{_libdir}/mstflint/python_tools/resourcetools
+%dir %{_libdir}/mstflint/sdk
+%attr(755,root,root) %{_libdir}/mstflint/sdk/libresource_dump_sdk.so
 %{_datadir}/mstflint
+%{_mandir}/man1/mstarchive.1*
 %{_mandir}/man1/mstconfig.1*
+%{_mandir}/man1/mstcongestion.1*
 %{_mandir}/man1/mstflint.1*
+%{_mandir}/man1/mstfwmanager.1*
+%{_mandir}/man1/mstfwreset.1*
+%{_mandir}/man1/mstfwtrace.1*
+%{_mandir}/man1/mstlink.1*
 %{_mandir}/man1/mstmcra.1*
 %{_mandir}/man1/mstmread.1*
 %{_mandir}/man1/mstmtserver.1*
 %{_mandir}/man1/mstmwrite.1*
+%{_mandir}/man1/mstprivhost.1*
+%{_mandir}/man1/mstreg.1*
 %{_mandir}/man1/mstregdump.1*
+%{_mandir}/man1/mstresourcedump.1*
 %{_mandir}/man1/mstvpd.1*
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libmtcr_ul.a
+%dir %{_libdir}/mstflint
 %{_libdir}/mstflint/libmtcr_ul.a
 %{_includedir}/mstflint
