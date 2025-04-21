@@ -1,0 +1,38 @@
+--- mstflint-4.31.0/mtcr_ul/fwctrl.c.orig	2025-02-02 14:05:06.000000000 +0100
++++ mstflint-4.31.0/mtcr_ul/fwctrl.c	2025-04-21 07:49:55.417422073 +0200
+@@ -41,6 +41,7 @@
+ #include <string.h>
+ #include <stddef.h>
+ #include "mtcr_mf.h"
++#include "mtcr.h"
+ #include "fwctrl.h"
+ #include "fwctrl_ioctl.h"
+ 
+@@ -79,6 +80,8 @@ void fwctl_set_device_id(mfile* mf)
+     }
+ }
+ 
++int return_by_reg_status(int reg_status);
++
+ int translate_cmd_status_to_reg_status(int cmd_status)
+ {
+     switch (cmd_status) {
+@@ -192,7 +195,7 @@ int fwctl_control_access_register(int
+     }
+ 
+     FWCTL_DEBUG_PRINT(mf, "register id = 0x%x, command status = 0x%x, reg status code: 0x%x, reg status: %s\n",
+-                      reg_id, cmd_status, *reg_status, m_err2str(status));
++                      reg_id, cmd_status, *reg_status, m_err2str(*reg_status));
+ out:
+     free(out);
+     free(in);
+--- mstflint-4.31.0/dev_mgt/tools_dev_types.c.orig	2025-02-02 14:05:06.000000000 +0100
++++ mstflint-4.31.0/dev_mgt/tools_dev_types.c	2025-04-21 17:38:05.374023907 +0200
+@@ -48,6 +48,7 @@
+ #include <tools_layouts/reg_access_hca_layouts.h>
+ #include "tools_dev_types.h"
+ #include "mflash/mflash_types.h"
++#include "mtcr_ul/mtcr_ul_com.h"
+ 
+ enum dm_dev_type {
+     DM_UNKNOWN = -1,

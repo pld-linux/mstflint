@@ -8,6 +8,7 @@ License:	BSD or GPL v2
 Group:		Networking/Utilities
 Source0:	https://github.com/Mellanox/mstflint/releases/download/v%{upstream_ver}/%{name}-%{upstream_ver}.tar.gz
 # Source0-md5:	19b8dd432ba7dbec66873190ec197fc7
+Patch0:		%{name}-includes.patch
 Patch1:		x32.patch
 URL:		https://github.com/Mellanox/mstflint
 BuildRequires:	autoconf >= 2.50
@@ -47,6 +48,7 @@ Pliki nagłówkowe do dostępu do kart HCA/NIC Mellanox.
 
 %prep
 %setup -q
+%patch -P0 -p1
 %patch -P1 -p1
 
 %build
